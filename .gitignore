@@ -1,0 +1,5 @@
+# 运行时状态（含签到日志，不入库）
+.state/
+config/browser.json
+*.png
+*.zip

@@ -1,0 +1,101 @@
+- generic [ref=e5]:
+  - generic [ref=e8]:
+    - generic [ref=e10]:
+      - button "收起侧边栏" [ref=e11] [cursor=pointer]
+      - button "搜索" [ref=e15] [cursor=pointer]
+    - generic [ref=e19]:
+      - generic [ref=e21] [cursor=pointer]:
+        - img "WorkBuddy" [ref=e22]
+        - generic "WorkBuddy" [ref=e23]
+      - tablist "Agents tabs" [ref=e24]:
+        - tab "新建任务" [selected] [ref=e25] [cursor=pointer]
+        - tab "项目" [ref=e30] [cursor=pointer]
+        - tab "专家·技能·连接器" [ref=e35] [cursor=pointer]
+        - tab "更多 灵感" [ref=e39] [cursor=pointer]:
+          - generic [ref=e45]: 更多
+          - generic: 灵感
+    - generic [ref=e47]:
+      - generic [ref=e48]: 最近
+      - button "移动端 WorkBuddy结合知识库使用方法 1小时前" [ref=e53] [cursor=pointer]:
+        - generic [ref=e54]:
+          - generic [ref=e55]: 移动端
+          - generic [ref=e58]: WorkBuddy结合知识库使用方法
+          - generic [ref=e59]: 1小时前
+    - generic [ref=e66]:
+      - button "StormZ0 StormZ0" [ref=e67] [cursor=pointer]:
+        - generic [ref=e68]:
+          - generic [ref=e70]:
+            - img "StormZ0"
+          - generic [ref=e71]: StormZ0
+      - button "消息中心" [ref=e73] [cursor=pointer]
+  - generic [ref=e84]:
+    - banner [ref=e85]:
+      - heading "WorkBuddy, 我帮你" [level=1] [ref=e86]
+    - tablist "场景切换" [ref=e88]:
+      - tab "日常办公" [selected] [ref=e89] [cursor=pointer]
+      - tab "代码开发" [ref=e94] [cursor=pointer]
+    - generic [ref=e99]:
+      - generic [ref=e102]:
+        - generic [ref=e103]:
+          - button [ref=e104] [cursor=pointer]:
+            - img "幻灯片" [ref=e105]
+            - text: 幻灯片
+          - button [ref=e108] [cursor=pointer]:
+            - img "视频生成" [ref=e109]
+            - text: 视频生成
+          - button [ref=e112] [cursor=pointer]:
+            - img "深度研究" [ref=e113]
+            - text: 深度研究
+          - button [ref=e116] [cursor=pointer]:
+            - img "文档处理" [ref=e117]
+            - text: 文档处理
+          - button [ref=e120] [cursor=pointer]:
+            - img "数据分析" [ref=e121]
+            - text: 数据分析
+          - button [ref=e124] [cursor=pointer]:
+            - img "可视化" [ref=e125]
+            - text: 可视化
+          - button [ref=e129] [cursor=pointer]:
+            - img "金融服务" [ref=e130]
+            - text: 金融服务
+          - button [ref=e133] [cursor=pointer]:
+            - img "产品管理" [ref=e134]
+            - text: 产品管理
+          - button [ref=e138] [cursor=pointer]:
+            - img "设计" [ref=e139]
+            - text: 设计
+          - button [ref=e142] [cursor=pointer]:
+            - img "邮件编辑" [ref=e143]
+            - text: 邮件编辑
+        - button [ref=e146] [cursor=pointer]
+      - generic [ref=e156]:
+        - generic [ref=e157]:
+          - textbox [active] [ref=e158]:
+            - paragraph [ref=e159]:
+              - generic: 今天帮你做些什么？ @ 引用对话文件，/ 调用技能与指令
+          - status [ref=e160]
+        - generic [ref=e162]:
+          - combobox "更多操作" [ref=e166] [cursor=pointer]
+          - generic [ref=e169]:
+            - combobox "Auto" [ref=e171] [cursor=pointer]
+            - button [ref=e179] [cursor=pointer]
+  - generic [ref=e183]:
+    - generic:
+      - generic:
+        - generic:
+          - generic:
+            - generic [ref=e184]:
+              - button "概览" [ref=e186] [cursor=pointer]
+              - generic [ref=e189]:
+                - button "进入全屏" [ref=e190] [cursor=pointer]
+                - button "收起右栏" [ref=e194] [cursor=pointer]
+            - generic:
+              - generic:
+                - button "概览" [ref=e201] [cursor=pointer]
+                - generic [ref=e206]:
+                  - generic:
+                    - button "产物" [expanded] [ref=e207] [cursor=pointer]
+                    - generic [ref=e212]: 暂无内容
+  - generic [ref=e214]:
+    - generic: 引用来源 (0)
+    - button "关闭" [ref=e215] [cursor=pointer]
