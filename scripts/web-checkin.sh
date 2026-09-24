@@ -35,22 +35,33 @@ if ! ensure_browser; then
 fi
 
 LOC=$(playwright-cli eval "location.href" 2>/dev/null | grep -o 'https://[^"\\]*' | head -1)
-if [[ "$LOC" == *"/login"* ]]; then
+# 会话失效判定：URL 跳到 /login，或取不到 URL（浏览器异常）
+if [[ "$LOC" == *"/login"* || -z "$LOC" ]]; then
   echo "$(date +%s)" >> "$FAILS"
   N=$(wc -l < "$FAILS" | tr -d ' ')
   [[ $N -ge 3 ]] && touch "$PAUSE" && echo "[$(date '+%F %T')] CIRCUIT_BREAKER trips=$N" >> "$LOG"
-  echo "[$(date '+%F %T')] NEED_RELOGIN" >> "$LOG"
+  echo "[$(date '+%F %T')] NEED_RELOGIN loc=${LOC:-<empty>}" >> "$LOG"
   echo "RESULT: NEED_RELOGIN | 登录态失效，需重新扫码（bash scripts/first-login.sh）"
   exit 2
 fi
 
 # 4) 调官方签到接口（同源 cookie 认证，无 token）
 RES=$(api_checkin)
-HTTP=$(echo "$RES" | tr -d '"' | head -1 | grep -o '^[0-9]*')
+HTTP=$(echo "$RES" | sed 's/^"//' | grep -o '^[0-9]\{3\}' | head -1)
 CREDIT=$(echo "$RES" | grep -o '"credit":[0-9]*' | head -1 | grep -o '[0-9]*$')
 STREAK=$(echo "$RES" | grep -o '"streak_days":[0-9]*' | head -1 | grep -o '[0-9]*$')
 
 # 5) 结果判定（三态幂等）+ 异常风控信号监测
+# 401/403 视为登录态失效（URL 检测可能漏判，此处兜底）
+if [[ "$HTTP" == "401" || "$HTTP" == "403" ]]; then
+  echo "$(date +%s)" >> "$FAILS"
+  N=$(wc -l < "$FAILS" | tr -d ' ')
+  [[ $N -ge 3 ]] && touch "$PAUSE" && echo "[$(date '+%F %T')] CIRCUIT_BREAKER trips=$N" >> "$LOG"
+  echo "[$(date '+%F %T')] NEED_RELOGIN http=$HTTP" >> "$LOG"
+  echo "RESULT: NEED_RELOGIN | 登录态失效（HTTP $HTTP），需重新扫码（bash scripts/first-login.sh）"
+  exit 2
+fi
+
 if [[ "$RES" == *'"code":0'* && -n "$CREDIT" ]]; then
   date +%s > "$MARK"; > "$FAILS"
   echo "[$(date '+%F %T')] SUCCESS credit=+$CREDIT streak=$STREAK http=$HTTP" >> "$LOG"

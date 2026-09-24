@@ -5,7 +5,7 @@ display_name_en: WorkBuddy Web Check-in
 description: WorkBuddy 网页版每日积分自动签到。无需桌面端，浏览器登录一次后每天自动领取签到积分（100/天，连续第7天1000）。幂等安全：当天短路、随机延迟、异常熔断、凭据不落盘。触发词：WorkBuddy 签到、自动签到、领积分、每日积分。
 description_zh: WorkBuddy 网页版每日积分自动签到。无需桌面端，浏览器登录一次后每天自动领取签到积分（100/天，连续第7天1000）。幂等安全：当天短路、随机延迟、异常熔断、凭据不落盘。
 description_en: Daily WorkBuddy web check-in automation. Claims daily credits (100/day, 1000 on day 7) via the same-origin official API after one QR-code login. No desktop client required; idempotent, rate-safe, credentials never stored.
-version: "1.1.0"
+version: "1.2.0"
 license: MIT
 author: StormZ0
 ---
@@ -59,20 +59,38 @@ bash scripts/web-checkin.sh
 | `NEED_RELOGIN` | 登录态过期（约1年后） | 重新跑 `first-login.sh` |
 | `CIRCUIT_BREAKER` | 连续失败已熔断 | 排查后删除 skill 目录下 `.paused` 解除 |
 
-### 定时自动化
+### 推荐用法：在对话中直接签到
 
-脚本幂等 + 当天短路，可放心设多个触发点（推荐 `FREQ=DAILY;BYHOUR=9,12,15,18,21;BYMINUTE=0;BYSECOND=0`）。在 WorkBuddy 内用自动化任务触发本脚本时，Prompt 参见 @references/automation-prompt.md。
+在 WorkBuddy 对话里说「**帮我签到**」「**领一下今日积分**」即可触发本 skill。脚本会在**当前运行环境**内自举（首次运行自动探测浏览器并生成配置），无需任何手工配置。
+
+```bash
+bash scripts/first-login.sh     # 仅在需要时：扫码登录一次
+bash scripts/web-checkin.sh     # 签到主体（幂等，当天重复跑自动短路）
+```
+
+### 关于定时自动化
+
+脚本幂等 + 当天短路，可放心设多个触发点。
+
+⚠️ **注意**：本 skill 依赖浏览器登录态持久化，而 WorkBuddy 的**云端自动化任务运行在一次性隔离沙箱**中（每次全新容器、无持久 profile），因此**云端定时任务不适用**（已实测验证）。若需无人值守定时，请在具备持久化环境的机器上使用本地 crontab：
+
+```bash
+0 9 * * * bash /path/to/workbuddy-web-checkin/scripts/web-checkin.sh >> /tmp/wb-checkin.out 2>&1
+```
+
+PR 模板见 @references/automation-prompt.md（适用于本地调度器场景）。
 
 ## 工作原理
 
 ```
-触发（自动化任务/手动）
+触发（对话中手动 / 本地定时）
  → [熔断检测] 连续失败≥3 → 停机待人工
  → [当天短路] 本地标记文件命中 → 0 接口调用，直接退出
  → [随机延迟] 0~240s 打散整点指纹
- → [会话检测] 打开 workbuddy.cn/app，跳到 /login 即登录态失效
+ → [浏览器自检] 探针验证会话活性；失败则清理脏锁并重试一次
+ → [会话检测] 打开 workbuddy.cn/app，跳 /login 或取不到 URL 即判定登录态失效
  → [官方接口] POST /billing/meter/daily-checkin（同源 cookie 认证）
- → [三态判定] code=0 成功 / "已签到"视为成功 / 其他记失败
+ → [三态判定] code=0 成功 / "已签到"视为成功 / 401·403 判登录失效 / 其他记失败
 ```
 
 关键点：腾讯网页版对 `www.workbuddy.cn/billing/meter/*` 提供同源代理，浏览器 cookie 直接认证，因此**无需逆向或存储 accessToken**——凭据攻击面比读桌面端登录态文件的方案更小。

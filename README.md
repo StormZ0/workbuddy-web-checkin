@@ -17,7 +17,7 @@ WorkBuddy **网页版**每日积分自动签到 Skill —— 无需桌面端、�
 | 幂等 | 三态判定 + 当天短路 | code=10001 兜底 | 查状态→可领才领→领完复核 |
 | 拟人化 | 随机延迟 0-240s + 正常 UA | — | — |
 | 熔断 | 连续失败≥3 自动停机 | — | — |
-| 适用平台 | 有 Chrome 的 macOS / Linux / Windows | macOS / Linux / Windows | Windows / macOS |
+| 适用平台 | Linux / macOS（沙箱、容器、桌面均可；需有 Chrome/Chromium） | macOS / Linux / Windows | Windows / macOS |
 
 三个项目互为补充：装了桌面端选他们，**只用网页版选我们**。
 
@@ -31,9 +31,18 @@ bash scripts/web-checkin.sh     # 签到（幂等，可重复跑）
 
 详见 [SKILL.md](SKILL.md)。
 
-## 在 WorkBuddy 内自动化
+## 在 WorkBuddy 内使用
 
-**先说结论**：本 skill 的脚本需要浏览器登录态，而 WorkBuddy 的云端自动化任务运行在**一次性隔离沙箱**中（每次全新容器，无持久文件系统、无浏览器登录态），因此**云端定时自动化当前不可行**（已实测验证）。推荐用法是在**本地**定时：
+**推荐用法：在对话里直接用。** 脚本设计为在**当前运行环境**内自举——只要环境有 Chrome/Chromium 和 `playwright-cli`（WorkBuddy 沙箱默认具备），无需任何手工配置，首次运行会自动生成浏览器配置。
+
+```bash
+bash scripts/first-login.sh     # 扫码登录（唯一人工步骤，登录态持久化在浏览器 profile）
+bash scripts/web-checkin.sh     # 签到（幂等，当天重复跑自动短路）
+```
+
+在对话中直接说「帮我签到」即可触达本 skill。
+
+**关于定时自动化**：本 skill 需要浏览器登录态持久化，因此**云端一次性沙箱任务不适用**（每次全新容器、无持久 profile，已实测验证）。若需定时，请在有持久化环境的机器上用本地 crontab：
 
 ```bash
 # 本地 crontab 示例：每天 9 点签到
