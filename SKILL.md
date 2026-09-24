@@ -1,6 +1,13 @@
 ---
 name: workbuddy-web-checkin
+display_name: WorkBuddy 网页版自动签到
+display_name_en: WorkBuddy Web Check-in
 description: WorkBuddy 网页版每日积分自动签到。无需桌面端，浏览器登录一次后每天自动领取签到积分（100/天，连续第7天1000）。幂等安全：当天短路、随机延迟、异常熔断、凭据不落盘。触发词：WorkBuddy 签到、自动签到、领积分、每日积分。
+description_zh: WorkBuddy 网页版每日积分自动签到。无需桌面端，浏览器登录一次后每天自动领取签到积分（100/天，连续第7天1000）。幂等安全：当天短路、随机延迟、异常熔断、凭据不落盘。
+description_en: Daily WorkBuddy web check-in automation. Claims daily credits (100/day, 1000 on day 7) via the same-origin official API after one QR-code login. No desktop client required; idempotent, rate-safe, credentials never stored.
+version: "1.0.0"
+license: MIT
+author: StormZ0
 ---
 
 # WorkBuddy 网页版每日自动签到
@@ -54,7 +61,7 @@ bash scripts/web-checkin.sh
 
 ### 定时自动化
 
-脚本幂等 + 当天短路，可放心设多个触发点（推荐 `FREQ=DAILY;BYHOUR=9,12,15,18,21;BYMINUTE=0;BYSECOND=0`）。在 WorkBuddy 内用自动化任务触发本脚本时，Prompt 参见 `references/automation-prompt.md`。
+脚本幂等 + 当天短路，可放心设多个触发点（推荐 `FREQ=DAILY;BYHOUR=9,12,15,18,21;BYMINUTE=0;BYSECOND=0`）。在 WorkBuddy 内用自动化任务触发本脚本时，Prompt 参见 @references/automation-prompt.md。
 
 ## 工作原理
 
@@ -72,7 +79,7 @@ bash scripts/web-checkin.sh
 
 ## 排错
 
-见 `references/troubleshooting.md`。常见：无浏览器环境（装 playwright-cli）、UA 指纹警告（保持脚本自带配置勿改）、积分未到账（以个人中心用量页为准，接口返回有延迟）。
+见 @references/troubleshooting.md。常见：无浏览器环境（装 playwright-cli）、UA 指纹警告（保持脚本自带配置勿改）、积分未到账（以个人中心用量页为准，接口返回有延迟）。
 
 ## 致谢与谱系
 
