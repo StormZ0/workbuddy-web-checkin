@@ -5,7 +5,7 @@ display_name_en: WorkBuddy Web Check-in
 description: WorkBuddy 网页版每日积分自动签到。无需桌面端，浏览器登录一次后每天自动领取签到积分（100/天，连续第7天1000）。幂等安全：当天短路、随机延迟、异常熔断、凭据不落盘。触发词：WorkBuddy 签到、自动签到、领积分、每日积分。
 description_zh: WorkBuddy 网页版每日积分自动签到。无需桌面端，浏览器登录一次后每天自动领取签到积分（100/天，连续第7天1000）。幂等安全：当天短路、随机延迟、异常熔断、凭据不落盘。
 description_en: Daily WorkBuddy web check-in automation. Claims daily credits (100/day, 1000 on day 7) via the same-origin official API after one QR-code login. No desktop client required; idempotent, rate-safe, credentials never stored.
-version: "1.0.0"
+version: "1.1.0"
 license: MIT
 author: StormZ0
 ---

@@ -1,5 +1,7 @@
 # workbuddy-web-checkin
 
+> ✅ **已上架 WorkBuddy 官方技能库**（2026-09-24 过审）——在 WorkBuddy 内搜索「**WorkBuddy 网页版自动签到**」即可一键安装。
+
 WorkBuddy **网页版**每日积分自动签到 Skill —— 无需桌面端、无后端、凭据不落盘。
 
 > 每天自动领取 WorkBuddy「今日礼包」的 100 积分（连续第 7 天 1000 积分），再也不怕断连。
@@ -31,7 +33,25 @@ bash scripts/web-checkin.sh     # 签到（幂等，可重复跑）
 
 ## 在 WorkBuddy 内自动化
 
-将本仓库作为本地 skill 目录挂给 WorkBuddy，用 `references/automation-prompt.md` 的模板创建 recurring 自动化任务（`FREQ=DAILY;BYHOUR=9,12,15,18,21`），每天自动签到并汇报结果。
+**先说结论**：本 skill 的脚本需要浏览器登录态，而 WorkBuddy 的云端自动化任务运行在**一次性隔离沙箱**中（每次全新容器，无持久文件系统、无浏览器登录态），因此**云端定时自动化当前不可行**（已实测验证）。推荐用法是在**本地**定时：
+
+```bash
+# 本地 crontab 示例：每天 9 点签到
+0 9 * * * bash /path/to/workbuddy-web-checkin/scripts/web-checkin.sh >> /tmp/wb-checkin.out 2>&1
+```
+
+若你的 WorkBuddy 环境支持本地任务执行，可使用 `references/automation-prompt.md` 中的模板提示词。
+
+## 常见问题
+
+**Q：浏览器起不来 / 报 daemon 错误？**
+A：脚本内置自检与脏锁自愈（v1.1.0 起）。若仍失败，手动清理：杀掉残留的 playwright/chrome 进程，删除 `~/.cache/ms-playwright/daemon` 下的 `Singleton*` 文件后重试。
+
+**Q：提示 NEED_RELOGIN？**
+A：重跑 `bash scripts/first-login.sh` 扫码即可（登录态一般可维持一年）。
+
+**Q：积分没到账？**
+A：接口返回与个人中心显示有延迟，以 [个人中心用量页](https://www.workbuddy.cn/profile/plans-usage) 为准。
 
 ## 安全与合规（第一性原理）
 
